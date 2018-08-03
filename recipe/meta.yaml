@@ -1,0 +1,52 @@
+# Based on arch recipe at:
+#  https://git.archlinux.org/svntogit/packages.git/tree/trunk?h=packages/ffnvcodec-headers
+# See also:
+#  https://git.videolan.org/?p=ffmpeg.git;a=commit;h=27cbbbb33f259de7c795d2b75edf7b240f0f82e6
+#  https://superuser.com/questions/1299064/error-cuvid-requested-but-not-all-dependencies-are-satisfied-cuda-ffnvcodec
+
+{% set name = 'ffnvcodec-headers' %}
+{% set version = '8.1.24.2' %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: 'https://github.com/FFmpeg/nv-codec-headers/releases/download/n{{ version }}/nv-codec-headers-{{ version }}.tar.gz'
+  sha256: 2b339b2493f5b63b285dd660be05102af7d4ff2de9fcf3af94e48b5f91a3ca57
+
+build:
+  number: 0
+  skip: True  # [not linux]
+  script: make PREFIX=${PREFIX} install
+
+requirements:
+  build:
+    - make
+
+test:
+  commands:
+     - test -f ${PREFIX}/include/ffnvcodec/dynlink_cuda.h      # [unix]
+     - test -f ${PREFIX}/include/ffnvcodec/dynlink_cuviddec.h  # [unix]
+     - test -f ${PREFIX}/include/ffnvcodec/dynlink_loader.h    # [unix]
+     - test -f ${PREFIX}/include/ffnvcodec/dynlink_nvcuvid.h   # [unix]
+     - test -f ${PREFIX}/include/ffnvcodec/nvEncodeAPI.h       # [unix]
+     - test -f ${PREFIX}/lib/pkgconfig/ffnvcodec.pc            # [unix]
+
+about:
+  home: https://git.videolan.org/?p=ffmpeg/nv-codec-headers.gi
+  license: MIT
+  license_file: LICENSE
+  summary: 'FFmpeg version of headers required to interface with Nvidias codec APIs'
+  description: |
+    FFmpeg version of headers required to interface with Nvidias codec APIs.
+
+    Corresponds to Video Codec SDK version 8.2.25.
+
+    Minimum required driver versions:
+    Linux: 396.24 or newer
+    Windows: 397.93 or newer
+
+extra:
+  recipe-maintainers:
+    - sdvillal
