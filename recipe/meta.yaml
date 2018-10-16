@@ -1,8 +1,13 @@
 # Based on arch recipe at:
 #  https://git.archlinux.org/svntogit/packages.git/tree/trunk?h=packages/ffnvcodec-headers
+#
 # See also:
 #  https://git.videolan.org/?p=ffmpeg.git;a=commit;h=27cbbbb33f259de7c795d2b75edf7b240f0f82e6
 #  https://superuser.com/questions/1299064/error-cuvid-requested-but-not-all-dependencies-are-satisfied-cuda-ffnvcodec
+#
+# I have not found required versions properly documented in ffmpeg yet, but one can always look at configure:
+#   https://github.com/FFmpeg/FFmpeg/blob/b2adc3169705824a8ed941eb2654f7acee2397ba/configure#L5971-L5976
+# (at the moment, anything > 8.1.24.2 works, but higher releases bump driver requirements which we do not want to)
 
 {% set name = 'ffnvcodec-headers' %}
 {% set version = '8.1.24.2' %}
@@ -16,7 +21,7 @@ source:
   sha256: 2b339b2493f5b63b285dd660be05102af7d4ff2de9fcf3af94e48b5f91a3ca57
 
 build:
-  number: 0
+  number: 1
   skip: True  # [not linux]
   script: make PREFIX=${PREFIX} install
 
@@ -41,11 +46,11 @@ about:
   description: |
     FFmpeg version of headers required to interface with Nvidias codec APIs.
 
-    Corresponds to Video Codec SDK version 8.2.25.
+    Corresponds to Video Codec SDK version 8.1.24.
 
     Minimum required driver versions:
-    Linux: 396.24 or newer
-    Windows: 397.93 or newer
+    Linux: 390.25 or newer
+    Windows: 390.77 or newer
 
 extra:
   recipe-maintainers:
